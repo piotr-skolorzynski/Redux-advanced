@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { uiActions } from "./ui-slice";
+
 const initialCartState = {
     items: [],
     totalQuantity: 0
@@ -53,12 +55,36 @@ const cartSlice = createSlice({
     }
 });
 
+const sendCartData = (cartData) => {
+    return async (dispatch) => {
+        dispatch(uiActions.showNotification(
+            {
+                status: 'pending',
+                title: 'Sending...',
+                message: "Sending cart data!"
+            }
+        ));
+
+        try {
+            await fetch('https://order-food-app-schwarzmuller-default-rtdb.europe-west1.firebasedatabase.app/cart.json',
+                {
+                    method: 'PUT',
+                    body: JSON.stringify(cartData)
+                }
+            );
+
+            dispatch(uiActions.showNotification({
+                status: 'success', title: 'Success!', message: "Sent cart data successfully!"
+            }));
+        } catch (error) {
+            dispatch(uiActions.showNotification({
+                status: 'error', title: 'Error!', message: "Sending cart data failed!"
+            }));
+        }
+    }
+}
+
 const cartReducer = cartSlice.reducer;
 const cartActions = cartSlice.actions;
 
-export { cartReducer, cartActions };
-
-//cartItem
-// {
-//     id, title, price, description, quantity, total
-// }
+export { cartReducer, cartActions, sendCartData };
