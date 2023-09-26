@@ -11,33 +11,38 @@ const cartSlice = createSlice({
         addItem(state, actions) {
             const itemIndex = state.items.findIndex(item => item.id === actions.payload.id);
 
-            if (itemIndex) {
-                const item = state.items[itemIndex];
-                item = { ...item, quantity: item.quantity + 1, total: item.total + item.price }
+            if (itemIndex < 0) {
+                const item = {
+                    id: actions.payload.id,
+                    title: actions.payload.title,
+                    description: actions.payload.description,
+                    price: actions.payload.price,
+                    quantity: 1,
+                    total: actions.payload.price
+                }
+                state.items.push(item);
 
                 return;
             }
 
-            state.items.push({ ...actions.payload.item, quantity: 1, total: actions.payload.item.price });
+            state.items[itemIndex] = { ...state.items[itemIndex], quantity: state.items[itemIndex].quantity + 1, total: state.items[itemIndex].total + state.items[itemIndex].price }
         },
 
         increaseItemQuantity(state, actions) {
             const itemIndex = state.items.findIndex(item => item.id === actions.payload.id);
-            const item = state.items[itemIndex];
 
-            item = { ...item, quantity: item.quantity + 1, total: item.total + item.price }
+            state.items[itemIndex] = { ...state.items[itemIndex], quantity: state.items[itemIndex].quantity + 1, total: state.items[itemIndex].total + state.items[itemIndex].price }
         },
         decreaseItemQuantity(state, actions) {
             const itemIndex = state.items.findIndex(item => item.id === actions.payload.id);
-            const item = state.items[itemIndex];
 
-            if (item.quantity === 1) {
+            if (state.items[itemIndex].quantity === 1) {
                 state.items.splice(itemIndex, 1);
 
                 return;
             }
 
-            item = { ...item, quantity: item.quantity - 1, total: item.total - item.price }
+            state.items[itemIndex] = { ...state.items[itemIndex], quantity: state.items[itemIndex].quantity - 1, total: state.items[itemIndex].total - state.items[itemIndex].price }
         }
     }
 });

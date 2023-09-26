@@ -9,8 +9,8 @@ const Cart = () => {
 
   if (!cartItems.length) {
     return (
-      <Card className={ classes.cart }>
-        <p>No products in a cart</p>
+      <Card>
+        <p>No products in the cart</p>
       </Card>
     )
   }
@@ -23,6 +23,7 @@ const Cart = () => {
           { cartItems.map((cartItem) => {
             return <CartItem
               key={ cartItem.id }
+              id={ cartItem.id }
               title={ cartItem.title }
               quantity={ cartItem.quantity }
               total={ cartItem.total }
